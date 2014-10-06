@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * Channelを利用したPOP3サーバー
+ * Channelを利用したSIPサーバー
  * @author uchicom: Shigeki Uchiyama
  *
  */
@@ -29,20 +29,24 @@ public class SelectorSipServer {
     public static void main(String[] args) {
         SipParameter parameter = new SipParameter(args);
         if (parameter.init(System.err)) {
-            execute(parameter);
+            SelectorSipServer server = new SelectorSipServer(parameter);
+            server.execute();
         }
     }
     private static boolean alive = true;
-    
+    private SipParameter parameter;
+    public SelectorSipServer(SipParameter parameter) {
+	this.parameter = parameter;
+    }
     /** メイン処理
      * 
      */
-    private static void execute(SipParameter param) {
+    public void execute() {
         ServerSocketChannel server = null;
         try {
             server = ServerSocketChannel.open();
             server.socket().setReuseAddress(true);
-            server.socket().bind(new InetSocketAddress(param.getPort()), param.getBack());
+            server.socket().bind(new InetSocketAddress(parameter.getPort()), parameter.getBack());
             server.configureBlocking(false);
             serverQueue.add(server);
             
