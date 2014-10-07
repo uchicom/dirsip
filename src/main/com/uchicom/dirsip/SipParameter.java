@@ -29,12 +29,34 @@ public class SipParameter {
      */
     public boolean init(PrintStream ps) {
 
-        // ポート
-        port = SipStatic.DEFAULT_PORT;
-        if (args.length > 0) {
-            port = Integer.parseInt(args[0]);
+        if (args.length < 1) {
+            ps.println("args.length < 1");
+            return false;
+        }
+        // ユーザディレクトリ格納フォルダ
+        base = SipStatic.DEFAULT_MAILBOX;
+
+        if (args.length > 1) {
+            base = new File(args[0]);
+        }
+        if (!base.exists() || !base.isDirectory()) {
+            System.err.println("user directory is not found.");
+            return false;
         }
 
+        // ホスト名
+        hostName = args[1];
+
+        // ポート
+        port = SipStatic.DEFAULT_PORT;
+        if (args.length > 2) {
+            port = Integer.parseInt(args[2]);
+        } 
+        // 接続待ち数
+        back =  SipStatic.DEFAULT_BACK;
+        if (args.length > 3) {
+            back = Integer.parseInt(args[3]);
+        }
         return true;
     }
     

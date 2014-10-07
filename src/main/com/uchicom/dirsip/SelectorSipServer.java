@@ -9,7 +9,9 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -37,6 +39,8 @@ public class SelectorSipServer {
 
 	private static boolean alive = true;
 	private SipParameter parameter;
+	private Map<String ,SelectionKey> registMap = new HashMap<String, SelectionKey>();
+	private Map<String ,SelectionKey> fromMap = new HashMap<String, SelectionKey>();
 
 	public SelectorSipServer(SipParameter parameter) {
 		this.parameter = parameter;
@@ -58,16 +62,18 @@ public class SelectorSipServer {
 
 			final Selector selector = Selector.open();
 			server.register(selector, SelectionKey.OP_ACCEPT,
-					new AcceptHandler());
+					new AcceptHandler(registMap, fromMap, parameter));
 			Thread thread = new Thread() {
 				public void run() {
 					try {
 						while (true) {
-							System.out.println("");
-							System.out.println("keys.size():"
-									+ selector.keys().size());
-							System.out.println("");
-							Thread.sleep(1000);
+							System.out.println(" keys:" +
+									+ selector.keys().size() +
+									",regist:" +
+									+ registMap.size() +
+									",from:"
+									+ fromMap.size());
+							Thread.sleep(2000);
 						}
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
@@ -88,6 +94,7 @@ public class SelectorSipServer {
 							if (key.isValid()) {
 								((Handler) key.attachment()).handle(key);
 							} else {
+								System.out.println("key.cancel!");
 								key.cancel();
 							}
 						} catch (IOException e) {
