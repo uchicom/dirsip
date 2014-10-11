@@ -67,11 +67,11 @@ public class SelectorSipServer {
 				public void run() {
 					try {
 						while (true) {
-							System.out.println(" keys:" +
+							System.out.println(" k:" +
 									+ selector.keys().size() +
-									",regist:" +
+									",r:" +
 									+ registMap.size() +
-									",from:"
+									",f:"
 									+ fromMap.size());
 							Thread.sleep(2000);
 						}

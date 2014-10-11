@@ -37,6 +37,7 @@ public class AcceptHandler implements Handler {
         if (key.isAcceptable()) {
             //サーバーの受付処理。
             SocketChannel socketChannel = ((ServerSocketChannel)key.channel()).accept();
+        	System.out.println("[" + socketChannel.getRemoteAddress() + "]=>");
             socketChannel.configureBlocking(false);
             socketChannel.register(key.selector(), SelectionKey.OP_READ, new SipHandler(registMap, fromMap, parameter));
         }
