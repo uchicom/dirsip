@@ -30,28 +30,28 @@ public class SipHandler implements Handler {
 
     /** 終了フラグ */
     boolean finished;
-    
+
     long startTime = System.currentTimeMillis();
-    
+
     /** ベースディレクトリ */
     File base;
 
 
     ByteBuffer readBuff = ByteBuffer.allocate(1024);
-    
-    ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
 //    String invite;
 //    SelectionKey inviteKey;
     LinkedBlockingQueue<StringBuffer> queue = new LinkedBlockingQueue<StringBuffer>();
-    
+
     String uri;
-    
+
     String nonce = Long.toHexString(System.currentTimeMillis());
     String realm;
     String password;
 
     StringBuilder recieve = new StringBuilder();
-    
+
     private Map<String, SelectionKey> registMap;
     private Map<String, SelectionKey> fromMap;
     public SipHandler(Map<String, SelectionKey> registMap, Map<String, SelectionKey> fromMap, SipParameter parameter) {
@@ -156,7 +156,7 @@ public class SipHandler implements Handler {
     			//もっと待つ
     			break;
     		}
-    		
+
     		//ここからメッセージの処理
 
     		strBuff = new StringBuffer(sepIndex + 4 + contentLength);
@@ -230,7 +230,7 @@ public class SipHandler implements Handler {
 			boolean throughVia = false;
 	    	for (int i = 1; i < lines.length; i++) {
 	    		String line = lines[i];
-	
+
 	            if ("".equals(line)) {
 					if (bodyLength <= 0) {
 						break;
@@ -243,10 +243,6 @@ public class SipHandler implements Handler {
 						line.startsWith("Content-Type")) {
 					//返信に付加しない
 				} else if (line.startsWith("Content-Length:")) {
-					if (mode == 1 && !authrization) {
-						strBuff.replace(8, 14, "401 Unauthorized");
-						strBuff.append("WWW-Authenticate: Digest realm=\""+ realm + "\", nonce=\"" + nonce + "\", algorithm=MD5\r\n");
-					}
 					bodyLength = Integer.parseInt(line.split(" +")[1]);
 				    strBuff.append("Content-Length: 0\r\n");
 				} else if (line.startsWith("Authorization:")) {
@@ -279,7 +275,7 @@ public class SipHandler implements Handler {
 									String invite = value.substring(0, sepIndex + 4 + contentLength);
 //									if (mode == 2) {
 //										int insertIndex = invite.indexOf("Via");
-//										
+//
 //										invite = invite.substring(0, insertIndex) + "Via: SIP/2.0/TCP " + realm + ":5060;rport;branch=z9hG4bK849041310a\r\n"
 //												+ invite.substring(insertIndex);
 //									}
@@ -350,6 +346,11 @@ public class SipHandler implements Handler {
 					strBuff.append("\r\n");
 				}
 	    	}
+
+			if (mode == 1 && !authrization) {
+				strBuff.replace(8, 14, "401 Unauthorized");
+				strBuff.append("WWW-Authenticate: Digest realm=\""+ realm + "\", nonce=\"" + nonce + "\", algorithm=MD5\r\n");
+			}
 			//メッセージボディが無くても空行が必要
 	        strBuff.append("\r\n");
 			recieve.delete(0, sepIndex + 4 + contentLength);
@@ -408,7 +409,7 @@ public class SipHandler implements Handler {
 		}
 		return buff.toString();
     }
-   
+
     /**
      * パスワードを読み込む
      * @param username
@@ -447,7 +448,7 @@ public class SipHandler implements Handler {
 			}
 		}
     }
-    
+
     public void send(SelectionKey key, String value) {
 		try {
 	    	//System.out.println("->>[" + channel.getRemoteAddress() + "]:" + invite.substring(0, invite.indexOf("\r\n")));
