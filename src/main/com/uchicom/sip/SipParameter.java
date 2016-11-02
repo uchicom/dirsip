@@ -1,7 +1,7 @@
 /**
  * (c) 2014 uchicom
  */
-package com.uchicom.dirsip;
+package com.uchicom.sip;
 
 import java.io.PrintStream;
 

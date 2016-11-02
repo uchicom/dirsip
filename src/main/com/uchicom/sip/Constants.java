@@ -1,4 +1,4 @@
-package com.uchicom.dirsip;
+package com.uchicom.sip;
 
 public class Constants {
 	// SMTP返却メッセージ

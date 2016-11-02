@@ -1,4 +1,4 @@
-package com.uchicom.dirsip;
+package com.uchicom.sip;
 
 public enum MethodType {
 
