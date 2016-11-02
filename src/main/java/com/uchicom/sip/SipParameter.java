@@ -5,9 +5,12 @@ package com.uchicom.sip;
 
 import java.io.PrintStream;
 
+import com.uchicom.server.MultiSocketServer;
 import com.uchicom.server.Parameter;
+import com.uchicom.server.PoolSocketServer;
 import com.uchicom.server.SelectorServer;
 import com.uchicom.server.Server;
+import com.uchicom.server.SingleSocketServer;
 
 /**
  * @author uchicom: Shigeki Uchiyama
@@ -58,6 +61,21 @@ public class SipParameter extends Parameter {
     public Server createServer() {
     	Server server = null;
 		switch (get("type")) {
+		case "multi":
+			server = new MultiSocketServer(this, (a, b)->{
+				return new SipProcess(a, b);
+			});
+			break;
+		case "pool":
+			server = new PoolSocketServer(this, (a, b)->{
+				return new SipProcess(a, b);
+			});
+			break;
+		case "single":
+			server = new SingleSocketServer(this, (a, b)->{
+				return new SipProcess(a, b);
+			});
+			break;
 		case "selector":
 			server = new SelectorServer(this, ()->{
 				return  new SipHandler(this);
