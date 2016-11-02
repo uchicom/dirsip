@@ -1,8 +1,6 @@
 package com.uchicom.dirsip;
 
-import java.io.File;
-
-public class SipStatic {
+public class Constants {
 	// SMTP返却メッセージ
 	/** 返却メッセージ(250(成功応答)) */
 	public static String RECV_250 = "250";
@@ -28,7 +26,7 @@ public class SipStatic {
 	public static String REG_EXP_DATA = "^[Dd][Aa][Tt][Aa] *$";
 	/** QUITの正規表現(大文字小文字後続スペース) */
 	public static String REG_EXP_QUIT = "^[Qq][Uu][Ii][Tt] *$";
-	
+
 	//POP3 STARTTLS拡張コマンド
 	/** STLSの正規表現(大文字小文字後続スペース) */
     public static String REG_EXP_STLS = "^[Ss][Tt][Ll][Ss] *$";
@@ -38,14 +36,14 @@ public class SipStatic {
 
 	/** パスワードファイルのパス */
 	public static String PASSWORD_FILE_NAME = "pass.txt";
-	
+
 	//初期設定
 	/** デフォルトメールボックスディレクトリ */
-    public static File DEFAULT_MAILBOX = new File("mailbox");
+    public static String DEFAULT_DIR = "mailbox";
     /** デフォルト待ち受けポート番号 */
-    public static int DEFAULT_PORT = 5060;
+    public static String DEFAULT_PORT = "5060";
     /** デフォルト接続待ち数 */
-	public static int DEFAULT_BACK = 10;
+	public static String DEFAULT_BACK = "10";
 	/** デフォルトスレッドプール数 */
-	public static int DEFAULT_POOL = 10;
+	public static String DEFAULT_POOL = "10";
 }
