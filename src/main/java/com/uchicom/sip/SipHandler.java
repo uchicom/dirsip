@@ -73,7 +73,8 @@ public class SipHandler implements Handler {
 			int length = channel.read(readBuff);
 			if (length == -1) {
 				if (uri != null) {
-					registMap.put(uri, null);
+					registMap.remove(uri);
+//					registMap.put(uri, null); TODO Nullエラー対応
 					fromMap.remove(uri);
 					System.out.println("ここは？");
 				}
@@ -253,12 +254,18 @@ public class SipHandler implements Handler {
 					bodyLength = Integer.parseInt(line.split(" +")[1]);
 					strBuff.append("Content-Length: 0\r\n");
 				} else if (line.startsWith("Authorization:")) {
+					System.out.println("Authorizationチェックだい！");
 					int usernameIndex = line.indexOf("username=");
 					String username = line.substring(usernameIndex + 10, line.indexOf("\"", usernameIndex + 10));
 					int uriIndex = line.indexOf("uri=");
 					String uriValue = line.substring(uriIndex + 5, line.indexOf("\"", uriIndex + 5));
 					int responseIndex = line.indexOf("response=");
 					String response = line.substring(responseIndex + 10, line.indexOf("\"", responseIndex + 10));
+
+					System.out.println("username=" + username);
+					System.out.println("uriValue=" + uriValue);
+					System.out.println("response=" + response);
+					System.out.println("digest=" + createDigest(username, uriValue));
 					if (response.equals(createDigest(username, uriValue))) {
 						authrization = true;
 					}
@@ -274,7 +281,6 @@ public class SipHandler implements Handler {
 							if (mode == 2 || mode == 3) {
 								SelectionKey userKey = registMap.get(toUser);
 								if (userKey == null) {
-									System.out.println("toUser:" + toUser);
 									//ユーザー接続なし
 									int index = strBuff.indexOf("\r\n", 11);
 									strBuff.replace(8, index, "408 Request Timeout");
@@ -427,7 +433,7 @@ public class SipHandler implements Handler {
 	 * @param username
 	 */
 	private void loadPassword(String username) {
-		File passwordFile = new File(new File(base, username), "pass.txt");
+		File passwordFile = new File(new File(base, username), Constants.PASSWORD_FILE_NAME);
 		if (passwordFile.exists()
 				&& passwordFile.isFile()) {
 			BufferedReader passReader = null;

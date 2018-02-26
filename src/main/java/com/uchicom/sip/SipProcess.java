@@ -9,8 +9,8 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.uchicom.server.Parameter;
 import com.uchicom.server.ServerProcess;
+import com.uchicom.util.Parameter;
 
 /**
  * @author uchicom: Shigeki Uchiyama
